@@ -18,7 +18,7 @@ from transformers import (
 from peft import LoraConfig, get_peft_model
 
 def process_data(example, tokenizer):
-    system_prompt = "You are a helpful assistant."  
+    system_prompt = "You are a helpful assistant.."  
 
     message_full = [
         {"role": "system", "content": system_prompt},
