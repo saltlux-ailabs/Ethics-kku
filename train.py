@@ -65,9 +65,9 @@ def print_trainable_parameters(model):
 if __name__ == "__main__":
     
     parser = argparse.ArgumentParser(description="Test script")
-    parser.add_argument('--model', type=str, help='type')
-    parser.add_argument('--lr', type=float, help='learning rate')
-    parser.add_argument('--epoch', type=int, help='epoch')
+    parser.add_argument('--model', type=str, help='type', default="bllossom")
+    parser.add_argument('--lr', type=float, help='learning rate', default=1e-4)
+    parser.add_argument('--epoch', type=int, help='epoch', default=1)
     args = parser.parse_args()
     base_model = args.model
     
@@ -83,6 +83,8 @@ if __name__ == "__main__":
         base_model_name = "nlpai-lab/KULLM3"
     elif base_model == "luxia":
         base_model_name = "./unethical-luxia2-8b-instruct-v1.0"
+    elif base_model == "bllossom":
+        base_model_name = "MLP-KTLim/llama-3-Korean-Bllossom-8B"
     else:
         base_model_name = "meta-llama/Llama-3.1-8B-Instruct"
     
@@ -113,7 +115,7 @@ if __name__ == "__main__":
     tokenizer.pad_token = tokenizer.eos_token
     tokenizer.padding_side = "left"  
     
-    train_dataset = Dataset.from_json('./train_v2.json')
+    train_dataset = Dataset.from_json('./train_final.json')
     processed_dataset = train_dataset.map(lambda example: process_data(example, tokenizer))
     
 

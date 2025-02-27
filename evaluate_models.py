@@ -29,6 +29,8 @@ if __name__ == "__main__":
         base_model_name = "nlpai-lab/KULLM3"
     elif base_model == 'luxia':
         base_model_name = "./unethical-luxia2-8b-instruct-v1.0"
+    elif base_model == 'bllossom':
+        base_model_name = "MLP-KTLim/llama-3-Korean-Bllossom-8B"
     else:
         base_model_name = "meta-llama/Llama-3.1-8B-Instruct"
 
@@ -44,14 +46,14 @@ if __name__ == "__main__":
     
     model = AutoModelForCausalLM.from_pretrained(base_model_name, device_map="cuda", quantization_config=quant_config)
     # model = PeftModel.from_pretrained(base_model, f"./model_output2/{new_model_name}")
-    # model = base_model.to("cuda")
+    # model = model.to("cuda")
     # 토크나이저 설정    
     tokenizer = AutoTokenizer.from_pretrained(base_model_name)
     tokenizer.pad_token = tokenizer.eos_token
     tokenizer.padding_side = "left" 
 
     # 데이터
-    test_dataset = load_dataset("json", data_files={"test": './test_1108.json'})
+    test_dataset = load_dataset("json", data_files={"test": './test_final.json'})
 
     all_results = []
     cnt_correct, cnt_incorrect = 0, 0
@@ -104,7 +106,7 @@ if __name__ == "__main__":
 
         outputs = model.generate(inputs['input_ids'], max_new_tokens=32, use_cache=True)
 
-        if "llama" in base_model_name:
+        if "llama" in base_model_name or "bllossom" in base_model_name:
             output_text = tokenizer.decode(outputs[0], skip_special_tokens=True)
             response = extract_model_response(output_text, ex_id,  resp_sp_tok="assistant\n").strip()
 
@@ -212,7 +214,7 @@ if __name__ == "__main__":
     
     # result_path = f"./results_1/{base_model_name.split('/')[-1]}_1017.json"
     # result_path = f"./result_2/{new_model_name}.json"
-    result_path = f"./result_2/luxia_base.json"
+    result_path = f"./result_2/bllossom_base.json"
     evaluation_summary = {
         "accuracy": accuracy,
         "cnt_correct": cnt_correct,
